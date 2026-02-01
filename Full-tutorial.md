@@ -1,4 +1,4 @@
-# 🔮 BTC Oracle Terminal: The Definitive User Guide (v0.1.0)
+# 🔮 BTC Oracle Terminal: The Definitive User Guide (v0.1.1)
 
 Welcome to the **BTC Oracle Terminal** — a disciplined, systematic trading workstation designed for high-probability Bitcoin setups. This is **not** a gambling tool. It enforces structural market bias, real-time technical signals, AI-powered sentiment, and strict risk rules to filter noise and deliver only quality trades.
 
@@ -19,9 +19,9 @@ Welcome to the **BTC Oracle Terminal** — a disciplined, systematic trading wor
 - **gaps**  
   Scans for unfilled CME Bitcoin futures gaps (price magnets).
 
-### 2. Market Positioning (Binance Futures)
+### 2. Market Positioning (Bybit Futures)
 - **funding**  
-  Live BTC funding rate. (Positive = Longs are paying shorts | Negative = Shorts are paying longs).
+  Live BTC funding rate from Bybit. (Positive = Longs are paying shorts | Negative = Shorts are paying longs).
 - **oi**  
   Current BTC Open Interest in Billions. Rising OI with rising price confirms trend strength.
 - **lsratio**  
@@ -87,9 +87,10 @@ You can install the terminal as a standalone app on your home screen or desktop:
 
 ---
 
-## 💡 Technical Notes & Security
+## ⚙️ Technical Notes & Security
 - **Secure Backend**: All API keys (DeepSeek) are stored on the Vercel server. Users cannot see or steal your keys.
-- **API Proxy**: External data (Binance/CoinGecko) is routed through a proxy to bypass browser restrictions.
+- **API Proxy**: CoinGecko data is routed through a proxy to bypass browser restrictions.
+- **Bybit Data**: Futures data (Funding/OI) is fetched directly from Bybit's public API.
 - **Rate Limiting**: Limited to 50 AI calls per day per device to manage costs.
 
 **Structural Discipline Over Hype. Trade like a machine.** 🔮🚀

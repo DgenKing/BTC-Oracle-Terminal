@@ -9,7 +9,7 @@ import { getMarketSentiment, analyzeText } from '../../lib/sentiment';
 import { getTradeRecommendation } from '../../lib/oracle';
 import { queryDeepSeek } from '../../lib/deepseek';
 import { checkRateLimit, getUsageReport, getUsage } from '../../lib/usage-tracker';
-import { getFundingRate, getOpenInterest, getLongShortRatio } from '../../lib/binance';
+import { getFundingRate, getOpenInterest, getLongShortRatio } from '../../lib/futures';
 import { QuickCommands } from '../mobile/QuickCommands';
 import { HelpGrid } from './HelpGrid';
 import { OracleCard } from './OracleCard';
@@ -110,7 +110,7 @@ export const Terminal: React.FC = () => {
         break;
 
       case 'funding':
-        addLog('FETCHING BINANCE FUNDING RATES...', 'system');
+        addLog('FETCHING BYBIT FUNDING RATES...', 'system');
         const fData = await getFundingRate();
         const fType = fData.rate >= 0 ? 'danger' : 'success';
         const fMsg = fData.rate >= 0 ? 'LONGS ARE PAYING SHORTS (Overcrowded)' : 'SHORTS ARE PAYING LONGS (Opportunity)';
@@ -311,7 +311,7 @@ export const Terminal: React.FC = () => {
       
       <header className="mb-4 border-b border-terminal-green-dim pb-2 flex justify-between items-end">
         <div>
-          <h1 className="text-sm font-terminal text-glow animate-pulse leading-none">BTC ORACLE TERMINAL v0.1.0</h1>
+          <h1 className="text-sm font-terminal text-glow animate-pulse leading-none">BTC ORACLE TERMINAL v0.1.1</h1>
           <p className="text-[8px] text-terminal-green-dim mt-1">STRUCTURAL DISCIPLINE OVER HYPE</p>
         </div>
         <div className="text-right font-terminal text-sm text-terminal-green-dim">

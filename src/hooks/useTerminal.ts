@@ -6,7 +6,7 @@ export function useTerminal() {
     {
       id: 'init-1',
       type: 'system',
-      content: 'BTC ORACLE TERMINAL v0.1.0 INITIALIZED...',
+      content: 'BTC ORACLE TERMINAL v0.1.1 INITIALIZED...',
       timestamp: new Date(),
     },
     {
