@@ -294,7 +294,11 @@ export const Terminal: React.FC = () => {
         }
       }
     } catch (e: any) {
-      addLog(`ERROR: ${e.message}`, 'error');
+      console.error("Command Error:", e);
+      addLog(`CRITICAL ERROR: ${e.message}`, 'error');
+      if (e.message.includes('PROXY_ERROR')) {
+        addLog('TIP: Ensure you are running with "vercel dev"', 'info');
+      }
     } finally {
       removeLog(loadingId);
     }
