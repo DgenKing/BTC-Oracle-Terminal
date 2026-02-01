@@ -116,3 +116,47 @@ export const getWeeklyBias = (data: MarketData): 'BULLISH' | 'BEARISH' => {
   if (!data.price) return 'BULLISH'; // Default to something if data failed
   return data.weeklyClose >= data.weeklyOpen ? 'BULLISH' : 'BEARISH';
 };
+
+export interface MAData {
+  ma50: number;
+  ma100: number;
+  ma200: number;
+  ma200w: number;
+  currentPrice: number;
+}
+
+export const getMAData = async (): Promise<MAData> => {
+  // Fetch more history for 200W MA (~1400 days)
+  const historyRes = await fetch('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1500&interval=daily');
+  const historyData = await historyRes.json();
+  const prices = historyData.prices.map((p: number[]) => p[1]);
+  const currentPrice = prices[prices.length - 1];
+
+  const calcMA = (data: number[], period: number) => {
+    if (data.length < period) return 0;
+    const slice = data.slice(-period);
+    return slice.reduce((a, b) => a + b, 0) / period;
+  };
+
+  // 200W MA is 200 * 7 days
+  const calcWMA = (data: number[], weeks: number) => {
+    const period = weeks * 7;
+    if (data.length < period) return 0;
+    const slice = data.slice(-period);
+    // Weekly close is every 7th day
+    const weeklyCloses = [];
+    for (let i = slice.length - 1; i >= 0; i -= 7) {
+      weeklyCloses.push(slice[i]);
+      if (weeklyCloses.length === weeks) break;
+    }
+    return weeklyCloses.reduce((a, b) => a + b, 0) / weeks;
+  };
+
+  return {
+    ma50: calcMA(prices, 50),
+    ma100: calcMA(prices, 100),
+    ma200: calcMA(prices, 200),
+    ma200w: calcWMA(prices, 200),
+    currentPrice
+  };
+};

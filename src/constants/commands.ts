@@ -21,6 +21,10 @@ export const COMMANDS = {
   'settings': 'View/update account settings (usage: settings [accountSize])',
   'usage': 'Show device API usage report',
   'debug': 'System debug info (usage: debug usage)',
+  'funding': 'Current BTC funding rate (Binance Futures)',
+  'oi': 'BTC Open Interest data',
+  'lsratio': 'Global BTC Long/Short account ratio',
+  'ma': 'Distance to key Moving Averages (50D, 100D, 200D, 200W)',
 } as const;
 
 export type CommandKey = keyof typeof COMMANDS;

@@ -3,12 +3,13 @@ import { useTerminal } from '../../hooks/useTerminal';
 import { OutputLog } from './OutputLog';
 import { CommandLine } from './CommandLine';
 import { COMMANDS } from '../../constants/commands';
-import { getMarketData, getWeeklyBias } from '../../lib/market-data';
+import { getMarketData, getWeeklyBias, getMAData } from '../../lib/market-data';
 import { getCMEGaps } from '../../lib/cme-gaps';
 import { getMarketSentiment, analyzeText } from '../../lib/sentiment';
 import { getTradeRecommendation } from '../../lib/oracle';
 import { queryDeepSeek } from '../../lib/deepseek';
 import { checkRateLimit, getUsageReport, getUsage } from '../../lib/usage-tracker';
+import { getFundingRate, getOpenInterest, getLongShortRatio } from '../../lib/binance';
 import { QuickCommands } from '../mobile/QuickCommands';
 import { HelpGrid } from './HelpGrid';
 import { OracleCard } from './OracleCard';
@@ -106,6 +107,42 @@ export const Terminal: React.FC = () => {
         addLog('CONSULTING THE HIVE MIND...', 'system');
         const sentiment = await getMarketSentiment();
         addLog(sentiment.label, 'info', undefined, false, false, true);
+        break;
+
+      case 'funding':
+        addLog('FETCHING BINANCE FUNDING RATES...', 'system');
+        const fData = await getFundingRate();
+        const fType = fData.rate >= 0 ? 'danger' : 'success';
+        const fMsg = fData.rate >= 0 ? 'LONGS ARE PAYING SHORTS (Overcrowded)' : 'SHORTS ARE PAYING LONGS (Opportunity)';
+        addLog(`BTC FUNDING RATE: ${fData.rate.toFixed(4)}%`, fType, undefined, false, false, true);
+        addLog(fMsg, 'info', undefined, false, false, true);
+        break;
+
+      case 'oi':
+        addLog('FETCHING OPEN INTEREST DATA...', 'system');
+        const oi = await getOpenInterest();
+        addLog(`BTC OPEN INTEREST: $${(oi / 1000000000).toFixed(2)}B`, 'success', undefined, false, false, true);
+        break;
+
+      case 'lsratio':
+        addLog('FETCHING LONG/SHORT ACCOUNT RATIO...', 'system');
+        const ls = await getLongShortRatio();
+        const lsVerdict = ls > 1.5 ? 'EXCESSIVE LONG BIAS' : ls < 0.8 ? 'EXCESSIVE SHORT BIAS' : 'NEUTRAL POSITIONING';
+        addLog(`GLOBAL L/S RATIO: ${ls.toFixed(2)}`, ls > 1 ? 'success' : 'danger', undefined, false, false, true);
+        addLog(`VERDICT: ${lsVerdict}`, 'info', undefined, false, false, true);
+        break;
+
+      case 'ma':
+        addLog('CALCULATING MOVING AVERAGE DISTANCE...', 'system');
+        const maData = await getMAData();
+        const formatMA = (val: number, label: string) => {
+          const dist = ((maData.currentPrice - val) / val) * 100;
+          return `${label.padEnd(6)}: $${val.toLocaleString(undefined, {maximumFractionDigits: 0})} [${dist >= 0 ? '+' : ''}${dist.toFixed(1)}%]`;
+        };
+        addLog(formatMA(maData.ma50, '50D'), 'info', undefined, false, false, true);
+        addLog(formatMA(maData.ma100, '100D'), 'info', undefined, false, false, true);
+        addLog(formatMA(maData.ma200, '200D'), 'info', undefined, false, false, true);
+        addLog(formatMA(maData.ma200w, '200W'), 'success', undefined, false, false, true);
         break;
 
       case 'analyze':

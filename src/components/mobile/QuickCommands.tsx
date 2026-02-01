@@ -13,11 +13,17 @@ const QUICK_CMDS = [
   { label: 'PRICE', cmd: 'price', action: 'run', color: 'border-terminal-green text-terminal-green' },
   { label: 'GAPS', cmd: 'gaps', action: 'run', color: 'border-terminal-amber text-terminal-amber' },
   { label: 'RSI', cmd: 'rsi', action: 'run', color: 'border-terminal-green-dim text-terminal-green-dim' },
+  { label: 'MA', cmd: 'ma', action: 'run', color: 'border-terminal-green-dim text-terminal-green-dim' },
+
+  { label: 'FUNDING', cmd: 'funding', action: 'run', color: 'border-terminal-amber text-terminal-amber' },
+  { label: 'OI', cmd: 'oi', action: 'run', color: 'border-terminal-green text-terminal-green' },
+  { label: 'LS', cmd: 'lsratio', action: 'run', color: 'border-terminal-green-dim text-terminal-green-dim' },
+  { label: 'ASK', cmd: 'ask ', action: 'type', color: 'border-terminal-green text-terminal-green' },
 
   { label: 'CALC', cmd: 'calc ', action: 'type', color: 'border-terminal-green-dim text-terminal-green-dim' },
   { label: 'SIZE', cmd: 'size ', action: 'type', color: 'border-terminal-green-dim text-terminal-green-dim' },
   { label: 'ANALYZE', cmd: 'analyze ', action: 'type', color: 'border-terminal-green-dim text-terminal-green-dim' },
-  { label: 'ASK', cmd: 'ask ', action: 'type', color: 'border-terminal-green text-terminal-green' },
+  { label: 'USAGE', cmd: 'usage', action: 'run', color: 'border-terminal-green-dim text-terminal-green-dim' },
 
   { label: 'HELP', cmd: 'help', action: 'run', color: 'border-terminal-green-dim text-terminal-green-dim' },
   { label: 'CLEAR', cmd: 'clear', action: 'run', color: 'border-terminal-red text-terminal-red' },
