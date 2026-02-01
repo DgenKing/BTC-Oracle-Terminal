@@ -20,7 +20,7 @@ export function useTerminal() {
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
 
-  const addLog = useCallback((content: string, type: LogEntry['type'] = 'system', component?: ReactNode, scrollToTop?: boolean, isHelp?: boolean) => {
+  const addLog = useCallback((content: string, type: LogEntry['type'] = 'system', component?: ReactNode, scrollToTop?: boolean, isHelp?: boolean, shouldType?: boolean) => {
     const id = Math.random().toString(36).substring(2, 9);
     setHistory((prev) => [
       ...prev,
@@ -32,6 +32,7 @@ export function useTerminal() {
         timestamp: new Date(),
         scrollToTop,
         isHelp,
+        shouldType,
       },
     ]);
 

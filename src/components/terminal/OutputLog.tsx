@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LogEntry } from '../../types/terminal';
+import { TypingEffect } from './TypingEffect';
 
 interface OutputLogProps {
   history: LogEntry[];
@@ -58,7 +59,11 @@ export const OutputLog: React.FC<OutputLogProps> = ({ history }) => {
                 <span className={getTypeColor(entry.type)}>
                   {entry.type === 'user' ? '>' : `[${entry.type === 'danger' ? 'ALERT' : entry.type.toUpperCase()}]:`}
                 </span>
-                <span className="whitespace-pre-wrap">{entry.content}</span>
+                {entry.shouldType ? (
+                  <TypingEffect text={entry.content || ''} />
+                ) : (
+                  <span className="whitespace-pre-wrap">{entry.content}</span>
+                )}
               </>
             )}
           </motion.div>

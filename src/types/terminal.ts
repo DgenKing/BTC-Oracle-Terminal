@@ -8,6 +8,7 @@ export interface LogEntry {
   timestamp: Date;
   scrollToTop?: boolean;
   isHelp?: boolean;
+  shouldType?: boolean;
 }
 
 export type CommandHandler = (args: string[]) => Promise<void> | void;

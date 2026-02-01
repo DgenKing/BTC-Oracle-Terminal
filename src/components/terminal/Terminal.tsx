@@ -12,7 +12,6 @@ import { checkRateLimit, getUsageReport, getUsage } from '../../lib/usage-tracke
 import { QuickCommands } from '../mobile/QuickCommands';
 import { HelpGrid } from './HelpGrid';
 import { OracleCard } from './OracleCard';
-import { TypingEffect } from './TypingEffect';
 
 export const Terminal: React.FC = () => {
   const { 
@@ -69,7 +68,7 @@ export const Terminal: React.FC = () => {
         addLog('FETCHING REAL-TIME BTC DATA...', 'system');
         const priceData = await getMarketData();
         const sign = priceData.change24h >= 0 ? '+' : '';
-        addLog(`BTC: $${priceData.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} | 24h: ${sign}${priceData.change24h.toFixed(2)}%`, priceData.change24h >= 0 ? 'success' : 'danger');
+        addLog(`BTC: $${priceData.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} | 24h: ${sign}${priceData.change24h.toFixed(2)}%`, priceData.change24h >= 0 ? 'success' : 'danger', undefined, false, false, true);
         break;
 
       case 'rsi':
@@ -79,26 +78,26 @@ export const Terminal: React.FC = () => {
         if (rsiData.rsi > 70) rsiStatus = 'OVERBOUGHT';
         if (rsiData.rsi < 30) rsiStatus = 'OVERSOLD';
         
-        addLog(`RSI (14): ${rsiData.rsi.toFixed(1)} [${rsiStatus}]`, 'info');
+        addLog(`RSI (14): ${rsiData.rsi.toFixed(1)} [${rsiStatus}]`, 'info', undefined, false, false, true);
         break;
 
       case 'bias':
         addLog('ANALYZING WEEKLY CANDLE STRUCTURE...', 'system');
         const biasData = await getMarketData();
         const bias = getWeeklyBias(biasData);
-        addLog(`WEEKLY OPEN: $${biasData.weeklyOpen.toLocaleString()} | CURRENT: $${biasData.price.toLocaleString(undefined, {maximumFractionDigits: 0})}`, 'info');
-        addLog(`VERDICT: ${bias}`, bias === 'BULLISH' ? 'success' : 'danger');
+        addLog(`WEEKLY OPEN: $${biasData.weeklyOpen.toLocaleString()} | CURRENT: $${biasData.price.toLocaleString(undefined, {maximumFractionDigits: 0})}`, 'info', undefined, false, false, true);
+        addLog(`VERDICT: ${bias}`, bias === 'BULLISH' ? 'success' : 'danger', undefined, false, false, true);
         break;
 
       case 'gaps':
         addLog('SCANNING CME FUTURES DATA...', 'system');
         const gaps = await getCMEGaps();
         if (gaps.length === 0) {
-          addLog('NO UNFILLED GAPS FOUND NEARBY.', 'info');
+          addLog('NO UNFILLED GAPS FOUND NEARBY.', 'info', undefined, false, false, true);
         } else {
-          addLog(`FOUND ${gaps.length} UNFILLED GAPS:`, 'info');
+          addLog(`FOUND ${gaps.length} UNFILLED GAPS:`, 'info', undefined, false, false, true);
           gaps.forEach(g => {
-            addLog(`- [${g.date}] RANGE: $${g.priceLow} - $${g.priceHigh}`, 'info');
+            addLog(`- [${g.date}] RANGE: $${g.priceLow} - $${g.priceHigh}`, 'info', undefined, false, false, true);
           });
         }
         break;
@@ -106,7 +105,7 @@ export const Terminal: React.FC = () => {
       case 'sentiment':
         addLog('CONSULTING THE HIVE MIND...', 'system');
         const sentiment = await getMarketSentiment();
-        addLog(sentiment.label, 'info');
+        addLog(sentiment.label, 'info', undefined, false, false, true);
         break;
 
       case 'analyze':
@@ -123,7 +122,7 @@ export const Terminal: React.FC = () => {
 
          addLog('PROCESSING TEXT INPUT...', 'system');
          const analysis = await analyzeText(args.join(' '));
-         addLog('', 'success', <TypingEffect text={analysis} />);
+         addLog(analysis, 'success', undefined, false, false, true);
          break;
 
       case 'ask':
@@ -161,7 +160,7 @@ export const Terminal: React.FC = () => {
           
           const fullPrompt = `${context}\n\nUSER_QUESTION: ${args.join(' ')}`;
           const response = await queryDeepSeek(fullPrompt, sysPrompt);
-          addLog('', 'success', <TypingEffect text={response} />);
+          addLog(response, 'success', undefined, false, false, true);
         } catch (e: any) {
           if (e.message?.includes('MISSING_API_KEY')) {
             addLog('ERROR: DEEPSEEK API KEY NOT CONFIGURED IN .env.local', 'error');
