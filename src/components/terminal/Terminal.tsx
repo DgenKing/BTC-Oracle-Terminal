@@ -265,7 +265,7 @@ export const Terminal: React.FC = () => {
   }, [addLog, clearHistory, clearHelp, removeLog, accountSize]);
 
   return (
-    <div className="relative h-[100dvh] w-screen bg-terminal-bg flex flex-col p-4 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] overflow-hidden select-none">
+    <div className="fixed inset-0 bg-terminal-bg flex flex-col p-4 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] overflow-hidden select-none">
       <div className="crt-overlay" />
       <div className="crt-glow" />
       
