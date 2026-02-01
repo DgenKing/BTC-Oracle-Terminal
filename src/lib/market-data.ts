@@ -8,11 +8,11 @@ export interface MarketData {
   weeklyClose: number;
 }
 
-async function fetchViaProxy(url: string) {
-  const res = await fetch(`/api/proxy?target=${encodeURIComponent(url)}`);
+// CoinGecko has CORS enabled - call directly (no proxy needed)
+async function fetchCoinGecko(url: string) {
+  const res = await fetch(url);
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ error: 'Unknown Error' }));
-    throw new Error(err.error || `PROXY_ERROR: ${res.status}`);
+    throw new Error(`CoinGecko API Error: ${res.status}`);
   }
   return res.json();
 }
@@ -56,12 +56,12 @@ function calculateRSI(prices: number[], period: number = 14): number {
 
 export const getMarketData = async (): Promise<MarketData> => {
   // 1. Fetch Price
-  const priceData = await fetchViaProxy('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');
+  const priceData = await fetchCoinGecko('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');
   const currentPrice = priceData.bitcoin.usd;
   const change24h = priceData.bitcoin.usd_24h_change;
 
   // 2. Fetch 100 days of history for accurate RSI (30 was too little for Wilder's)
-  const historyData = await fetchViaProxy('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=100&interval=daily');
+  const historyData = await fetchCoinGecko('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=100&interval=daily');
   const closePrices = historyData.prices.map((p: number[]) => p[1]);
   const rsi = calculateRSI(closePrices, 14);
 
@@ -103,8 +103,9 @@ export interface MAData {
 }
 
 export const getMAData = async (): Promise<MAData> => {
-  // 200W MA needs ~1400 days
-  const historyData = await fetchViaProxy('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1500&interval=daily');
+  // CoinGecko free tier limits: use 365 days max
+  // 200W MA (1400 days) unavailable on free tier - show 52W instead
+  const historyData = await fetchCoinGecko('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=365&interval=daily');
   const prices = historyData.prices.map((p: number[]) => p[1]);
   const currentPrice = prices[prices.length - 1];
 
@@ -112,22 +113,23 @@ export const getMAData = async (): Promise<MAData> => {
     if (data.length < p) return 0;
     return data.slice(-p).reduce((a, b) => a + b, 0) / p;
   };
-  
+
+  // Calculate weekly MA from available data (52 weeks max with 365 days)
   const calcWMA = (data: number[], weeks: number) => {
-    const period = weeks * 7;
-    if (data.length < period) return 0;
+    const availableWeeks = Math.min(weeks, Math.floor(data.length / 7));
+    if (availableWeeks < 1) return 0;
     const weeklyCloses = [];
-    for (let i = data.length - 1; i >= 0 && weeklyCloses.length < weeks; i -= 7) {
+    for (let i = data.length - 1; i >= 0 && weeklyCloses.length < availableWeeks; i -= 7) {
       weeklyCloses.push(data[i]);
     }
-    return weeklyCloses.reduce((a, b) => a + b, 0) / weeks;
+    return weeklyCloses.reduce((a, b) => a + b, 0) / weeklyCloses.length;
   };
 
   return {
     ma50: calcMA(prices, 50),
     ma100: calcMA(prices, 100),
     ma200: calcMA(prices, 200),
-    ma200w: calcWMA(prices, 200),
+    ma200w: calcWMA(prices, 52), // 52W MA (1 year) - best we can do on free tier
     currentPrice
   };
 };

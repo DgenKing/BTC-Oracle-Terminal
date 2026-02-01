@@ -142,7 +142,7 @@ export const Terminal: React.FC = () => {
         addLog(formatMA(maData.ma50, '50D'), 'info', undefined, false, false, true);
         addLog(formatMA(maData.ma100, '100D'), 'info', undefined, false, false, true);
         addLog(formatMA(maData.ma200, '200D'), 'info', undefined, false, false, true);
-        addLog(formatMA(maData.ma200w, '200W'), 'success', undefined, false, false, true);
+        addLog(formatMA(maData.ma200w, '52W'), 'success', undefined, false, false, true);
         break;
 
       case 'analyze':
@@ -311,7 +311,7 @@ export const Terminal: React.FC = () => {
       
       <header className="mb-4 border-b border-terminal-green-dim pb-2 flex justify-between items-end">
         <div>
-          <h1 className="text-xl font-terminal text-glow animate-pulse leading-none">BTC ORACLE TERMINAL v0.1.0</h1>
+          <h1 className="text-sm font-terminal text-glow animate-pulse leading-none">BTC ORACLE TERMINAL v0.1.0</h1>
           <p className="text-[8px] text-terminal-green-dim mt-1">STRUCTURAL DISCIPLINE OVER HYPE</p>
         </div>
         <div className="text-right font-terminal text-sm text-terminal-green-dim">
