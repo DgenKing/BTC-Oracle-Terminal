@@ -1,143 +1,95 @@
-# 🔮 BTC Oracle Terminal: The Definitive User Guide
+# 🔮 BTC Oracle Terminal: The Definitive User Guide (v0.1.0)
 
-Welcome to the **BTC Oracle Terminal** — a disciplined, systematic trading framework designed for high-probability Bitcoin setups. This is **not** a gambling tool. It enforces structural market bias, real-time technical signals, AI-powered sentiment, and strict risk rules to filter noise and deliver only quality trades.
-
-The terminal is fully hosted — just open the link in your browser (desktop or mobile). No installation required.
+Welcome to the **BTC Oracle Terminal** — a disciplined, systematic trading workstation designed for high-probability Bitcoin setups. This is **not** a gambling tool. It enforces structural market bias, real-time technical signals, AI-powered sentiment, and strict risk rules to filter noise and deliver only quality trades.
 
 ---
 
-## 🛠️ Command Directory (All 13 Commands)
+## 🛠️ Command Directory (All 17 Commands)
 
-### 1. Market Analysis Commands
+### 1. Market Data & Technicals
 - **price**  
-  Fetches live BTC/USD price + 24h change from CoinGecko.
-- **bias**  
-  Compares current price to Monday 00:00 UTC open.  
-  → Above = **BULLISH** weekly bias  
-  → Below = **BEARISH** weekly bias
+  Fetches live BTC/USD price + 24h change from CoinGecko via a secure Vercel proxy.
 - **rsi**  
-  14-period Relative Strength Index (daily timeframe).  
-  → < 30: Oversold (potential bounce)  
-  → > 70: Overbought (potential reversal)
+  Calculates a precise 14-period RSI using 100 days of daily history and Wilder's Smoothing.
+- **ma**  
+  Calculates distance (%) to key Moving Averages: **50D, 100D, 200D, and 200W**. Essential for spotting overextension.
+- **bias**  
+  Compares current price to the surgical Monday 00:00 UTC open.  
+  → Above = **BULLISH** weekly bias | Below = **BEARISH** weekly bias.
 - **gaps**  
-  Lists unfilled CME Bitcoin futures gaps (price magnets that fill ~90% of the time).
+  Scans for unfilled CME Bitcoin futures gaps (price magnets).
+
+### 2. Market Positioning (Binance Futures)
+- **funding**  
+  Live BTC funding rate. (Positive = Longs are paying shorts | Negative = Shorts are paying longs).
+- **oi**  
+  Current BTC Open Interest in Billions. Rising OI with rising price confirms trend strength.
+- **lsratio**  
+  Global Long/Short account ratio. Detects when the "dumb money" crowd is overcrowded.
+
+### 3. AI Oracle & Sentiment
 - **sentiment**  
-  Current Crypto Fear & Greed Index.  
-  → < 20: Extreme Fear → long opportunities  
-  → > 80: Extreme Greed → caution / short exits
+  Fetches the current Crypto Fear & Greed Index (0-100).
 - **analyze <text>**  
-  Paste any social media post, news headline, or tweet. AI classifies it as **BULLISH**, **BEARISH**, or **NOISE/COPE**.
+  Paste any news or social media text. **DeepSeek AI** classifies it as **BULLISH**, **BEARISH**, or **COPE**.
 - **ask <question>**  
-  Ask the AI anything. The model automatically receives live price, RSI, bias, and sentiment for context-aware answers.
+  Ask the Oracle anything. The AI automatically receives **Live Context Injection** (Price, RSI, Bias, Sentiment) before answering.
 
-### 2. Execution & Risk Commands
+### 4. Execution & Risk (The Bouncer)
 - **play**  
-  Full system scan. Aggregates bias, RSI, sentiment, and gaps into an **Oracle Report Card** with a clear verdict: **LONG**, **SHORT**, or **NO TRADE** + confidence %.
+  Full system scan. Generates a high-tech **Oracle Report Card** with a clear verdict: **LONG**, **SHORT**, or **NO TRADE**.
 - **calc <entry> <stop> [target]**  
-  Checks your trade setup against **The Bouncer**.  
-  Mandatory rule: **Reward:Risk must be ≥ 6:1** or the trade is **REJECTED**.  
-  Example: `calc 65000 64500 68500`
+  Validates setups against **The Bouncer**.  
+  Rule: **Reward:Risk must be ≥ 6:1** or the trade is **REJECTED**.
 - **size <risk%> <entry> <stop>**  
-  Calculates exact position size in BTC based on your account balance and chosen risk %. Uses the account size saved in **settings**.
+  Calculates exact position size in BTC based on your account settings.
 
-### 3. Utility & Navigation Commands
-- **settings**  
-  Set or update your account balance (in USD) for accurate position sizing. Value is saved in your browser (localStorage).
+### 5. System & Navigation
+- **usage**  
+  Shows your device API usage, remaining daily quota (50 calls), and unique Session ID.
+- **settings [amount]**  
+  View or update your account balance (saved locally in browser).
 - **help**  
-  Displays the full visual command grid.
+  Displays the command grid (automatically clears on the next command).
 - **clear**  
   Wipes the terminal log history.
 
 ---
 
-## 🎮 How to Use the Terminal (UX/UI Guide)
+## 🎮 Pro User Interface Guide
 
-### Desktop Experience
-1. **Input**: Type commands in the glowing input bar at the bottom.
-2. **Execute**: Press **Enter**.
-3. **Command History**: Use **↑ / ↓ arrow keys** to cycle through previous commands.
-4. **Scrolling**: The log auto-scrolls to new outputs. When you run **help**, it intelligently scrolls to the top of the help section for easy reading.
+### Interactive Features
+- **Fast Typing Effect**: System responses type out at **10ms per character** for a realistic terminal feel.
+- **Command History**: Use **↑ / ↓ arrow keys** on desktop to cycle through your last 50 commands.
+- **Mobile Quick Buttons**: A 4x4 grid at the bottom provides one-tap execution for data and pre-fill templates for complex commands.
+- **Inline Loading**: The `[SYSTEM]: PROCESSING...` indicator appears contextually and clears once data arrives.
 
-### Mobile Experience
-1. **Input**: Tap the input bar at the bottom to type.
-2. **Quick Command Grid** (12 buttons at the very bottom):
-   - **One-tap buttons**: price, bias, rsi, gaps, sentiment, play, help, clear → instantly run the command.
-   - **Pre-fill buttons**: calc, size, analyze, ask → insert the command template so you only need to add parameters.
-3. The grid stays fixed at the bottom for fast access without scrolling.
-
-### Visual Feedback
-- **Green** text: Bullish / success / approved
-- **Red/Alert** text: Bearish / danger / rejected
-- **Amber** text: System messages / processing
-- **Loading**: "[SYSTEM]: PROCESSING..." with pulse animation while fetching data or AI responses.
+### PWA Installation (Run as an App)
+You can install the terminal as a standalone app on your home screen or desktop:
+1. **iOS**: Safari → Share → **Add to Home Screen**.
+2. **Android**: Chrome → 3 dots → **Install App**.
+3. **Desktop**: Chrome/Edge → Address Bar → **Install Icon** (right side).
 
 ---
 
-## 📖 Step-by-Step: How to Find and Take a Trade
+## 📈 Core Strategy: "Monday-Tuesday Quality Trade"
 
-### Step 1: Establish Weekly Bias (Monday Morning)
-Run: `bias`  
-→ This is your anchor for the entire week.  
-**Rule**: Only trade in the direction of the bias unless RSI is extreme (>80 for shorts in bull bias, <20 for longs in bear bias).
+**Objective**: 1 high-probability trade per week.
 
-### Step 2: Check Price Magnets
-Run: `gaps`  
-→ Look for unfilled CME gaps. Price is strongly attracted to fill them.
-
-### Step 3: Get Full System Verdict
-Run: `play`  
-→ Read the **Oracle Report Card**.  
-Only proceed if confidence > 75% and verdict is LONG or SHORT.
-
-### Step 4: Validate Risk (The Bouncer)
-Plan your levels, then run:  
-`calc <entry> <stop> <target>`  
-→ If **APPROVED** (R:R ≥ 6:1) → proceed.  
-→ If **REJECTED** → adjust stop or target until approved.
-
-### Step 5: Size the Position
-First ensure your account balance is set: `settings`  
-Then run:  
-`size 1 65000 64500` (example: risk 1% of account)
-
-### Step 6: Execute & Manage
-- Enter the trade on your exchange.
-- Never hold over weekend → close by Friday NY close.
+1. **Monday (The Wait)**: Wait for CME to open and set the **Monday Open** price.
+2. **Tuesday (The Bias)**: Run `bias`. If price is above Monday open, look for LONGS.
+3. **The Confluence**: Wait for price to touch the Monday Open again. Check:
+   - `funding`: Is it neutral or negative (for longs)?
+   - `ma`: Are we near a key support MA (like 50D or 200W)?
+   - `play`: Does the Oracle give a >75% confidence verdict?
+4. **The Bouncer**: Run `calc`. Ensure you have a **6:1 R:R**.
+5. **The Exit**: Close by Friday New York close. **No weekend holds.**
 
 ---
 
-## 📈 Core Strategy: "Monday-Tuesday Quality Trade" (1 Trade Per Week)
+## 💡 Technical Notes & Security
+- **Secure Backend**: All API keys (DeepSeek) are stored on the Vercel server. Users cannot see or steal your keys.
+- **API Proxy**: External data (Binance/CoinGecko) is routed through a proxy to bypass browser restrictions.
+- **Rate Limiting**: Limited to 50 AI calls per day per device to manage costs.
 
-**Goal**: Maximum discipline, minimum screen time.
-
-1. **Sunday/Monday — Wait**  
-   Do nothing Sunday night. Let CME open Monday 00:00 UTC to set the weekly anchor price.
-
-2. **Tuesday — Confirmation**  
-   Run `bias`.  
-   → Price above Monday open → look for **LONGS** only  
-   → Price below Monday open → look for **SHORTS** only
-
-3. **Wait for Retrace**  
-   Watch for price to retrace/touch the Monday open level again.
-
-4. **Confluence Check** (when price touches Monday open):
-   - Run `rsi` → ideal 40–50 for longs, 50–60 for shorts
-   - Run `play` → need >75% confidence
-   - Build a 6:1 R:R setup and validate with `calc`
-
-5. **Enter** only when all checks pass.
-
-6. **Exit**  
-   - Primary: Hit your 6:1 target  
-   - Latest: Friday New York close (no weekend holds)
-
----
-
-## 💡 Pro Tips
-- Use `ask` for clarification: e.g., `ask Why is the bias still bullish despite the drop?`
-- Paste wild Twitter takes into `analyze` to cut through hype.
-- Always start a new week with `clear` for a clean mental slate.
-- The terminal enforces discipline — if The Bouncer rejects your trade, walk away.
-
-Structural discipline over hype. Trade like a machine. 🔮🚀
+**Structural Discipline Over Hype. Trade like a machine.** 🔮🚀
