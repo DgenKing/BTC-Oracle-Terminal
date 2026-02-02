@@ -28,8 +28,13 @@ export const Terminal: React.FC = () => {
   
   // Settings State
   const [accountSize, setAccountSize] = useState(() => {
-    const saved = localStorage.getItem('dgen_account_size');
-    return saved ? parseFloat(saved) : 10000;
+    try {
+      const saved = localStorage.getItem('dgen_account_size');
+      // Simple obfuscation to prevent casual reading (Not real encryption)
+      return saved ? parseFloat(atob(saved)) : 10000;
+    } catch (e) {
+      return 10000;
+    }
   });
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -151,6 +156,12 @@ export const Terminal: React.FC = () => {
            break;
          }
 
+         const analyzeTextRaw = args.join(' ');
+         if (analyzeTextRaw.length > 1000) {
+           addLog('ERROR: TEXT TOO LONG (MAX 1000 CHARS).', 'error');
+           break;
+         }
+
          const analyzeLimit = checkRateLimit();
          if (!analyzeLimit.allowed) {
            addLog(`RATE LIMIT: ${analyzeLimit.reason}`, 'error');
@@ -158,13 +169,19 @@ export const Terminal: React.FC = () => {
          }
 
          addLog('PROCESSING TEXT INPUT...', 'system');
-         const analysis = await analyzeText(args.join(' '));
+         const analysis = await analyzeText(analyzeTextRaw);
          addLog(analysis, 'success', undefined, false, false, true);
          break;
 
       case 'ask':
         if (args.length === 0) {
           addLog('USAGE: ask <question>', 'error');
+          break;
+        }
+
+        const askTextRaw = args.join(' ');
+        if (askTextRaw.length > 500) {
+          addLog('ERROR: QUESTION TOO LONG (MAX 500 CHARS).', 'error');
           break;
         }
 
@@ -220,9 +237,21 @@ export const Terminal: React.FC = () => {
         }
         const entry = parseFloat(args[0]);
         const stop = parseFloat(args[1]);
+        if (isNaN(entry) || isNaN(stop)) {
+          addLog('ERROR: INVALID PRICE INPUTS.', 'error');
+          break;
+        }
         const target = args[2] ? parseFloat(args[2]) : entry + (entry - stop) * 6;
+        if (isNaN(target)) {
+          addLog('ERROR: INVALID TARGET INPUT.', 'error');
+          break;
+        }
         
         const risk = Math.abs(entry - stop);
+        if (risk === 0) {
+          addLog('ERROR: RISK CANNOT BE ZERO (ENTRY == STOP).', 'error');
+          break;
+        }
         const reward = Math.abs(target - entry);
         const rr = reward / risk;
 
@@ -241,12 +270,29 @@ export const Terminal: React.FC = () => {
           addLog('USAGE: size <risk%> <entry> <stop>', 'error');
           break;
         }
-        const riskPct = parseFloat(args[0]) / 100;
+        const riskPctRaw = parseFloat(args[0]);
         const sEntry = parseFloat(args[1]);
         const sStop = parseFloat(args[2]);
-        
+
+        if (isNaN(riskPctRaw) || isNaN(sEntry) || isNaN(sStop)) {
+          addLog('ERROR: INVALID NUMERIC INPUTS.', 'error');
+          break;
+        }
+
+        if (riskPctRaw <= 0 || riskPctRaw > 100) {
+          addLog('ERROR: RISK % MUST BE BETWEEN 0 AND 100.', 'error');
+          break;
+        }
+
+        const riskPct = riskPctRaw / 100;
         const riskAmount = accountSize * riskPct;
         const riskPerCoin = Math.abs(sEntry - sStop);
+
+        if (riskPerCoin === 0) {
+          addLog('ERROR: RISK PER COIN CANNOT BE ZERO.', 'error');
+          break;
+        }
+
         const positionSize = riskAmount / riskPerCoin;
 
         addLog(`CALCULATING POSITION SIZE (Account: $${accountSize.toLocaleString()})...`, 'system');
@@ -280,7 +326,7 @@ export const Terminal: React.FC = () => {
             addLog('ERROR: INVALID AMOUNT.', 'error');
           } else {
             setAccountSize(newSize);
-            localStorage.setItem('dgen_account_size', newSize.toString());
+            localStorage.setItem('dgen_account_size', btoa(newSize.toString()));
             addLog(`SETTINGS UPDATED: ACCOUNT SIZE = $${newSize.toLocaleString()}`, 'success');
           }
         }
@@ -295,10 +341,9 @@ export const Terminal: React.FC = () => {
       }
     } catch (e: any) {
       console.error("Command Error:", e);
-      addLog(`CRITICAL ERROR: ${e.message}`, 'error');
-      if (e.message.includes('PROXY_ERROR')) {
-        addLog('TIP: Ensure you are running with "vercel dev"', 'info');
-      }
+      // Sanitize error message to avoid information leakage
+      const safeMsg = e.message?.includes('API_ERROR') ? 'REMOTE API ERROR' : 'SYSTEM MALFUNCTION';
+      addLog(`CRITICAL ERROR: ${safeMsg}`, 'error');
     } finally {
       removeLog(loadingId);
     }

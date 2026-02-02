@@ -31,25 +31,31 @@ function createNewUsage(): UsageData {
 }
 
 export function getUsage(): UsageData {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (!stored) {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) {
+      const newUsage = createNewUsage();
+      saveUsage(newUsage);
+      return newUsage;
+    }
+    
+    const data: UsageData = JSON.parse(atob(stored));
+    // Reset if new day
+    if (data.todayDate !== getTodayDate()) {
+      data.todayCalls = 0;
+      data.todayDate = getTodayDate();
+      saveUsage(data);
+    }
+    return data;
+  } catch (e) {
     const newUsage = createNewUsage();
     saveUsage(newUsage);
     return newUsage;
   }
-  
-  const data: UsageData = JSON.parse(stored);
-  // Reset if new day
-  if (data.todayDate !== getTodayDate()) {
-    data.todayCalls = 0;
-    data.todayDate = getTodayDate();
-    saveUsage(data);
-  }
-  return data;
 }
 
 export function saveUsage(data: UsageData) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  localStorage.setItem(STORAGE_KEY, btoa(JSON.stringify(data)));
 }
 
 export function recordCall(tokensUsed: number) {

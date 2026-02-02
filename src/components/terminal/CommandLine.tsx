@@ -41,6 +41,7 @@ export const CommandLine: React.FC<CommandLineProps> = ({ onCommand, value, onCh
         placeholder="..."
         spellCheck={false}
         autoComplete="off"
+        maxLength={1000}
       />
     </form>
   );

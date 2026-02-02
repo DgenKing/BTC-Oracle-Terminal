@@ -5,6 +5,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
+  // 1. Basic Authentication
+  const authHeader = req.headers.authorization;
+  const expectedAuth = process.env.INTERNAL_API_KEY;
+  
+  if (expectedAuth && authHeader !== `Bearer ${expectedAuth}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   const { prompt, systemPrompt } = req.body;
 
   if (!prompt) {
@@ -35,16 +43,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      return res.status(response.status).json({ error: errorData.message || 'DeepSeek API error' });
+      // 2. Sanitize Error Handling
+      console.error('DeepSeek API error:', response.statusText);
+      return res.status(response.status).json({ error: 'DeepSeek API error' });
     }
 
     const data = await response.json();
     return res.status(200).json({ 
       content: data.choices[0].message.content,
-      usage: data.usage // DeepSeek returns { completion_tokens, prompt_tokens, total_tokens }
+      usage: data.usage 
     });
   } catch (error: any) {
-    return res.status(500).json({ error: error.message || 'Internal Server Error' });
+    // 2. Sanitize Error Handling
+    console.error('Oracle handler error:', error.message);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 }

@@ -41,9 +41,16 @@ export async function queryDeepSeek(prompt: string, systemPrompt: string = "You 
   }
 
   // PROD MODE: Use Vercel serverless function
+  const internalKey = import.meta.env.VITE_INTERNAL_API_KEY;
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  
+  if (internalKey) {
+    headers['Authorization'] = `Bearer ${internalKey}`;
+  }
+
   const response = await fetch('/api/oracle', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify({ prompt, systemPrompt })
   });
 
